@@ -1,5 +1,7 @@
-const UserData = require("../model/UserData.model");
+const mongoose = require("mongoose")
 
+const UserData = require("../model/UserData.model");
+const User = require("../model/User.model")
 const updateUserData = async (req, res) => {
   try {
     const id = req.params.id;
@@ -20,7 +22,6 @@ const updateUserData = async (req, res) => {
 
 const studentdata = async(req, res) =>{
   try {
-
       const id = req.params.id;
       const userExist = await User.findById(id);
       if(!userExist){
@@ -50,21 +51,21 @@ const addUserData = async (req, res) => {
   }
 };
 
-const getAllUserData = async (req, res) => {
-  try {
-    const result = await UserData.find();
-    if (!result) {
-      res.status(404).json({ message: "User data not found" });
-    }
-    res
-      .status(200)
-      .json({ message: "All user data fetched successfully", data: result });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error occurred while fetching user data", error });
-  }
-};
+// const getAllUserData = async (req, res) => {
+//   try {
+//     const result = await UserData.find();
+//     if (!result) {
+//       res.status(404).json({ message: "User data not found" });
+//     }
+//     res
+//       .status(200)
+//       .json({ message: "All user data fetched successfully", data: result });
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Error occurred while fetching user data", error });
+//   }
+// };
 
 const deleteUserData = async (req, res) => {
   try {
@@ -77,6 +78,25 @@ const deleteUserData = async (req, res) => {
     res.status(200).json({message: "User deleted successfully"});
   } catch (error) {
     res.status(500).json({error: error});
+  }
+};
+ 
+
+ 
+
+const getAllUserData = async (req, res) => {
+  try {
+    const result = await User.find();
+    if (!result) {
+      res.status(404).json({ message: "User data not found" });
+    }
+    res
+      .status(200)
+      .json({ message: "All user data fetched successfully", data: result });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error occurred while fetching user data", error });
   }
 };
  

@@ -3,9 +3,9 @@ const mailSender = require("../Utils/MailSender");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 require("dotenv").config();
-
+ 
 exports.resetPasswordToken = async (req, res) => {
-	try {
+	try { 
 		const email = req.body.email;
 		const user = await User.findOne({ email: email });
 		if (!user) {
@@ -18,7 +18,7 @@ exports.resetPasswordToken = async (req, res) => {
 
 		const updatedDetails = await User.findOneAndUpdate(
 			{ email: email },
-			{
+			{ 
 				token: token,
 				resetPasswordExpires: Date.now() + 3600000,
 			},

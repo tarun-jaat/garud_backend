@@ -8,6 +8,7 @@ const {
   updateDisplayPicture,
   getEnrolledCourses,
   instructorDashboard,
+  getEnrolledQuiz,
 } = require("../Controllers/Profile.controller")
 // const { isDemo } = require("../Middlewares/demo");
 
@@ -20,7 +21,9 @@ router.put("/updateProfile", auth, updateProfile)
 router.get("/getUserDetails", auth, getAllUserDetails)
 
 // Get Enrolled Courses
-router.get("/getEnrolledCourses", auth, getEnrolledCourses)
+router.get("/getEnrolledCourses", auth, getEnrolledCourses) 
+router.get("/getEnrolledQuiz", auth, getEnrolledQuiz)
+
 router.put("/updateDisplayPicture", auth, updateDisplayPicture)
 //get instructor dashboard details
 router.get("/getInstructorDashboardDetails",auth,isInstructor, instructorDashboard)

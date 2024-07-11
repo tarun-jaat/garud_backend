@@ -50,12 +50,15 @@ const userSchema = new mongoose.Schema(
 				ref: "Course",
 			},
 		],
-		quizzes: [
-			{
+		quizzes: [{ 
+			type: mongoose.Schema.Types.ObjectId,
+			 ref: 'quiz' }
+			],
+			batches: [{ 
 				type: mongoose.Schema.Types.ObjectId,
-				ref: "Quiz",
-			},
-		],
+				 ref: 'Batch' }
+				],
+		
 		token: {
 			type: String,
 		},

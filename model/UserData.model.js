@@ -10,12 +10,12 @@ const userDataSchema = new mongoose.Schema(
     student_enrollment_no: {
       type: Number,
       required: true,
-      trim: true,
+      trim: true, 
       unique: true,
     },
     student_class: {
       type: String,
-      required: true,
+      required: true, 
     },
     student_Mobile_number: {
       type: Number,

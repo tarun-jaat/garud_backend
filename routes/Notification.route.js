@@ -14,3 +14,4 @@ router
   .patch(notificationController.markAllNotificationsAsRead);
 
 module.exports = router;
+  

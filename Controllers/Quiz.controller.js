@@ -1,7 +1,9 @@
+
+const mongoose = require("mongoose")
 const Category =require('../model/Category.model')
-const Question =require('../model/question.model')
 const Quiz =require('../model/Test.modal')
 const User =require('../model/User.model')
+const question=require ('../model/question.model')
 const {uploadImageToCloudinary}= require('../Utils/ImageUploder')
  
 exports.createQuiz = async (req, res) => {
@@ -11,8 +13,8 @@ exports.createQuiz = async (req, res) => {
             testName,
             testDescription,
             noOfQuestion,
-            duration,
-            price, 
+            duration,  
+            price,  
             category,
             totalMarks,
             tag: _tag,
@@ -123,6 +125,12 @@ exports.createQuiz = async (req, res) => {
 exports.addQuestion = async (req, res) => {
     try {
       const quizId = req.params.quizId;
+    if (!mongoose.Types.ObjectId.isValid(quizId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid quizId",
+      });
+    }
       const {
         questionText,
         options,
@@ -148,7 +156,7 @@ exports.addQuestion = async (req, res) => {
       }
   
       // Create a new question
-      const newQuestion = await Question.create({
+      const newQuestion = await question.create({
         questionText,
         options,
         answer,
@@ -190,6 +198,10 @@ exports.addQuestion = async (req, res) => {
         })
         .populate("category")
         .populate("ratingAndReviews")
+        .populate({
+          path: "questions",
+          model: question,
+        })
         .exec()
   
       if (!quiz) {
@@ -217,7 +229,7 @@ exports.addQuestion = async (req, res) => {
 
   exports.getAllQuizzes = async (req, res) => {
     try {
-      const quizzes = await Quiz.find({ status: true })
+      const quizzes = await Quiz.find({ status: "Published" })
       .select('testName testDescription price instructor duration thumbnailImage ratingAndReviews created_at')
       .populate("instructor", "", User) 
       .exec()
@@ -232,7 +244,80 @@ exports.addQuestion = async (req, res) => {
       res.status(500).json({
         success: false,
         message: 'Internal Server Error',
-        error: error.message,
+        error: error.message, 
       }); 
     }
+};
+
+
+exports.editQuiz = async (req, res) => {
+  try {
+    const quizId = req.params.quizId;
+    const updates = req.body
+
+    const quizdetail = await Quiz.findById(quizId)
+
+    if (!quizdetail) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid quizId",
+      });
+    }
+
+    // If Thumbnail Image is found, update it
+    if (req.files) {
+      console.log("thumbnail update")
+      const thumbnail = req.files.thumbnailImage
+      const thumbnailImage = await uploadImageToCloudinary(
+        thumbnail,
+        process.env.FOLDER_NAME
+      )
+      quizdetail.thumbnail = thumbnailImage.secure_url
+    }
+
+    // Update only the fields that are present in the request body
+    for (const key in updates) {
+      if (updates.hasOwnProperty(key)) {
+        if (key === "tag" || key === "instructions") {
+          quizdetail[key] = JSON.parse(updates[key])
+        } else {
+          quizdetail[key] = updates[key]
+        }
+      } 
+    }
+
+    await quizdetail.save()
+
+    const updatedquiz = await Quiz.findOne({
+      _id: quizId,
+    })
+    .populate({
+      path: "instructor",
+      model: User, 
+      populate: {
+        path: "additionalDetails",
+      },
+    })
+      .populate("category")
+      .populate("ratingAndReviews")
+      .populate({
+        path: "questions",
+        
+      })
+      .exec()
+
+    // Send success response
+    res.status(200).json({
+      success: true,
+      message: "Quiz updated successfully",
+      data:updatedquiz,
+    });
+  } catch (error) {
+    console.error("Error in editQuiz:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
 };

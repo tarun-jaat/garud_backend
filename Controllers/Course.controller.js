@@ -7,6 +7,7 @@ const { uploadImageToCloudinary } = require("../Utils/ImageUploder")
 const CourseProgress = require("../model/CourseProgress.model")
 const { convertSecondsToDuration } = require("../Utils/DateTimeFormate")
 // Function to create a new course
+
 exports.createCourse = async (req, res) => {
   try {
     // Get user ID from request object
@@ -30,8 +31,8 @@ exports.createCourse = async (req, res) => {
     const tag = JSON.parse(_tag)
     const instructions = JSON.parse(_instructions)
 
-    console.log("tag", tag)
-    console.log("instructions", instructions)
+    // console.log("tag", tag)
+    // console.log("instructions", instructions)
 
     // Check if any of the required fields are missing
     if (
@@ -54,7 +55,7 @@ exports.createCourse = async (req, res) => {
     }
     // Check if the user is an instructor
     const instructorDetails = await User.findById(userId, {
-      $or: [{ accountType: "Instructor" }, { accountType: "Admin" }],
+      accountType: "Instructor",
     })
 
     if (!instructorDetails) {
@@ -77,7 +78,7 @@ exports.createCourse = async (req, res) => {
       thumbnail,
       process.env.FOLDER_NAME
     )
-    console.log(thumbnailImage)
+    // console.log(thumbnailImage)
     // Create a new course with the given details
     const newCourse = await Course.create({
       courseName,
@@ -114,7 +115,7 @@ exports.createCourse = async (req, res) => {
       },
       { new: true }
     )
-    console.log("HEREEEEEEEE", categoryDetails2)
+    console.log("category", categoryDetails2)
     // Return the new course and a success message
     res.status(200).json({
       success: true,
@@ -131,6 +132,8 @@ exports.createCourse = async (req, res) => {
     })
   }
 }
+
+
 // Edit Course Details
 exports.editCourse = async (req, res) => {
   try {
@@ -215,6 +218,7 @@ exports.getAllCourses = async (req, res) => {
     )
       .populate("instructor")
       .exec()
+
 
     return res.status(200).json({
       success: true,
@@ -451,7 +455,7 @@ exports.deleteCourse = async (req, res) => {
     }
 
     // Unenroll students from the course
-    const studentsEnrolled = course.studentsEnroled
+    const studentsEnrolled = course.studentsEnrolled
     for (const studentId of studentsEnrolled) {
       await User.findByIdAndUpdate(studentId, {
         $pull: { courses: courseId },

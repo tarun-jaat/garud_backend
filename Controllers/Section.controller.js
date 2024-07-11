@@ -22,7 +22,7 @@ exports.createSection = async (req, res) => {
 		// Add the new section to the course's content array
 		const updatedCourse = await Course.findByIdAndUpdate(
 			courseId,
-			{
+			{ 
 				$push: {
 					courseContent: newSection._id,
 				},
@@ -131,4 +131,4 @@ exports.deleteSection = async (req, res) => {
 			message: "Internal server error",
 		});
 	}
-};   
+};    

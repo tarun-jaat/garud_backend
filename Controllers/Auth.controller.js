@@ -13,7 +13,7 @@ exports.signup = async (req, res) => {
 	try {
 		// Destructure fields from the request body
 		const {
-			firstName,
+			firstName, 
 			lastName,
 			email,
 			password,

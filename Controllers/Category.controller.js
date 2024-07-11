@@ -3,12 +3,12 @@ const Category = require("../model/Category.model");
 function getRandomInt(max) {
     return Math.floor(Math.random() * max)
   }
-
+ 
 exports.createCategory = async (req, res) => {
 	try {
 		const { name, description } = req.body;
 		if (!name) {
-			return res
+			return res 
 				.status(400)
 				.json({ success: false, message: "All fields are required" });
 		}
@@ -16,7 +16,7 @@ exports.createCategory = async (req, res) => {
 			name: name,
 			description: description,
 		}); 
-		console.log(CategorysDetails);
+		console.log(CategorysDetails); 
 		return res.status(200).json({
 			success: true, 
 			message: "Categorys Created Successfully",

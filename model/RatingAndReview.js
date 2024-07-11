@@ -24,6 +24,11 @@ const ratingAndReviewSchema = new mongoose.Schema({
     ref:"Test",
     index:true
     },
+    batch:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"Batch",
+      index:true
+    },
   
   createdAt: {
     type: Date,

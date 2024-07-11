@@ -15,7 +15,7 @@ const {
   resetPasswordToken,
   resetPassword,
 } = require("../Controllers/ResetPassword.controller")
-
+ 
 const { auth } = require("../Middleware/Auth.middleWare")
 
 // Routes for Login, Signup, and Authentication

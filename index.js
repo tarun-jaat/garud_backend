@@ -18,7 +18,7 @@ const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const { cloudnairyconnect } = require("./config/Cloudinary");
 const notification =require('./Controllers/Notification.controller')
-
+const Batch =require('./routes/Batches.route')
 const quizRoutes =require('./routes/Quiz.route')
 
 // const allUser=require('./routes/user.route')
@@ -35,7 +35,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: JSON.parse(process.env.CORS_ORIGIN),
+    origin: "*",
     credentials: true,
     maxAge: 14400,
   })
@@ -54,7 +54,7 @@ cloudnairyconnect();
 
 const io = require('socket.io')(server, {
   transports: ['polling'],
-  cors: { origin: process.env.CORS_ORIGIN },
+  cors:"*",
 })
 
 
@@ -71,6 +71,7 @@ app.use("/api/v1/profile", profileRoutes);
 // app.use('/api/v1/notifications', notificationRoutes);
 
 app.use("/api/v1/course", CourseRoutes);
+app.use("/api/v1/batch", Batch);
 
 app.use("/api/v1/quiz", quizRoutes);
 
