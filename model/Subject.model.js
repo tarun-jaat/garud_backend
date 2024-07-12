@@ -5,7 +5,7 @@ const SubjectSchema = new mongoose.Schema({
     subjectName: {
       type: String,
       required: true,
-    },
+    }, 
     Chapter:[
       {
         type: mongoose.Schema.Types.ObjectId,

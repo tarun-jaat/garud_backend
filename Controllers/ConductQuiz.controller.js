@@ -121,6 +121,9 @@ exports.endQuiz = async (req, res) => {
       if (question.answer === answer.answer) {
         score += question.marks;
       }
+      else {
+        score -= 1;
+      }
     }
 
     conductQuiz.endTime = Date.now();

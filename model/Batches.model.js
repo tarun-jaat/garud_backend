@@ -26,7 +26,7 @@ const BatchesSchema = new mongoose.Schema({
     enum: ["Online", "Offline"],
   },
   batchFees: {
-    type: String,
+		type: Number,
     required: true,
   },
   batchMaxStudents: {

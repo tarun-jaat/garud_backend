@@ -19,6 +19,12 @@ const categorySchema = new mongoose.Schema({
 			ref: "Test",
 		},
 	],
+	batches:[
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Batch",
+		}
+	]
 });
 
 // Export the Tags model

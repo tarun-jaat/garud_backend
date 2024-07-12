@@ -1,6 +1,6 @@
 const express =require("express")
 const router = express.Router()
-const {createBatch, getInstructorBatches, editBatchDetails, getAllBatches} = require('../Controllers/Batch.controller')
+const {createBatch, getInstructorBatches, editBatchDetails, getAllBatches, getBatchFullDetails} = require('../Controllers/Batch.controller')
 const {createSubject,updateSubject,deleteSubject,addChapter,addTopic,getSubjects, getAllSubjectsData, addSectionIntoSubject, getLectureContent}=require('../Controllers/CreateSubject.controller')
 const{createSubSection, createNote}=require('../Controllers/Lecture.controller')
 const { 
@@ -13,7 +13,7 @@ const {
   router.post('/createBatch',auth,isInstructor,createBatch);
   router.post('/updateBatchDetails',auth,isInstructor,editBatchDetails)
   router.get('/getAllBatches',getAllBatches)
-
+  // router.get("/getSectionDetails",get)
 
 
 
@@ -28,6 +28,7 @@ router.get('/getAllSubjectsData',auth,getAllSubjectsData)
 router.post('/addSectionIntoSubject',auth,isInstructor,addSectionIntoSubject)
 
 router.post('/subject/getSubject/:batchId',auth,isInstructor,getSubjects)
+router.get('/getfullDetails/:batchId',auth,getBatchFullDetails)
 
 // ********************************************************************************************************
 //                                      ChapterRoutes

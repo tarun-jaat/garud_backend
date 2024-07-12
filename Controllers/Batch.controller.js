@@ -6,11 +6,12 @@ const Category = require("../model/Category.model");
 const SubSection = require("../model/Subsection.model");
 const Lecture = require("../model/Lecture.model");
 const Subject = require("../model/Subject.model");
+const Section =require("../model/Section.model")
 
 exports.createBatch = async (req, res) => {
-  try {
+  try { 
     //get user id
-    const userId = req.user.id;
+    const userId = req.user.id; 
 
     let {
       batchName,
@@ -31,7 +32,7 @@ exports.createBatch = async (req, res) => {
     const tag = JSON.parse(_tag);
     const instructions = JSON.parse(_instructions);
 
-    const missingFields = [];
+    const missingFields = []; 
 
     if (!batchName) missingFields.push("batchName");
     if (!batchDescription) missingFields.push("batchDescription");
@@ -49,7 +50,7 @@ exports.createBatch = async (req, res) => {
         message: `Missing fields: ${missingFields.join(", ")}`,
       });
     }
-
+ 
     if (!status || status === undefined) {
       status = "Upcoming";
     }
@@ -161,6 +162,25 @@ exports.getInstructorBatches = async (req, res) => {
   }
 };
 
+// exports.getSubjectData=async(req,res)=>{
+//   try {
+//     subjectId =req.params.subjectId
+//     const subjectData=await Subject.findById(ssubjectId)
+//     .populate
+
+
+
+//   }catch(error){
+//     console.error(error);
+//     res.status(500).json({
+//       success:false,
+//       message:"failed to fetch subject data",
+//       error:error.message,
+//       });
+  
+//   }
+
+
 exports.editBatchDetails = async (req, res) => {
   try {
     const batchId = req.body.batchId;
@@ -202,8 +222,9 @@ exports.getAllBatches = async (req, res) => {
     const batches = await Batch.find({ publishedStatus: "Published" })
       .populate("instructor")
       .populate("subjects")
+      .populate('category')
       .exec();
-
+ 
     res.status(200).json({
       success: true,
       message: "Batches fetched successfully",
@@ -214,6 +235,102 @@ exports.getAllBatches = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "failed to fetch Batches",
+      error: error.message, 
+    });
+  } 
+}; 
+
+exports.getBatchFullDetails = async (req, res) => {
+  try {
+    const batchId = req.params.batchId;
+    // console.log(batchId)
+    
+    const batch = await Batch.findById(batchId)
+    .populate({
+      path: "instructor",
+      populate: {
+        path: "additionalDetails",
+      }, 
+    }) 
+     .populate({
+      path: "subjects",
+      populate: {
+        path: "Chapter", 
+        populate: {
+          path: "notes",
+        },
+        populate:{
+          path: "qizzes",
+        },
+        populate:{
+          path: "DPP",
+        },
+        populate:{
+          path:"lectureContent",
+          populate: {
+            path: 'subSection',
+            model: 'SubSection'
+          },
+        }
+      },
+    })
+     .populate("category")
+     .exec();
+     if (!batch) {
+      return res.status(404).json({
+        success: false,
+        message: "Batch not found",
+      });
+    }
+
+   
+    res.status(200).json({
+      success: true,
+      data: batch,
+      message: "Batch details fetched successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch batch details",
+      error: error.message,
+    });
+  }
+};
+
+exports.getSectionDetails = async (req, res) => {
+  try {
+    const sectionId = req.params.sectionId;
+
+    const section = await Section.findById(sectionId)
+     .populate({
+          path: "lectureContent",
+          populate: {
+            path: "subSection",
+            model: "SubSection",
+        
+        },
+      })
+     .exec();
+
+    if (!section) {
+      return res.status(404).json({
+        success: false,
+        message: "Section not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: section,
+      message: "Section details fetched successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch section details",
       error: error.message,
     });
   }
